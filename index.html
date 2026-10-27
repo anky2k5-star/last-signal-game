@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080e16"><title>LAST SIGNAL // Real-time Command</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="game-engine.js"></script><script defer src="renderer.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+<div class="network-screen" id="mode-screen">
+  <div class="network-shell">
+    <header class="network-top"><a class="brand" href="#"><span class="brand-sigil"><i></i><i></i><i></i></span><span class="brand-name">LAST<span>SIGNAL</span></span><span class="edition">COMMAND SYSTEMS</span></a><span class="network-secure"><i></i> NO ACCOUNT REQUIRED</span></header>
+    <main class="network-main">
+      <p class="kicker">FRONTIER WARFARE SIMULATION <span>· LIVE COMMAND NETWORK</span></p>
+      <h1>Fight together.<br><em>Hold the signal.</em></h1>
+      <p class="network-lede">Create a room and share its code. Commanders can join from any device with a browser.</p>
+      <div class="network-grid">
+        <section class="network-card create-card">
+          <div class="network-card-index">01 / HOST A MATCH</div><h2>Create a room</h2><p>Open a new battlefield and invite up to seven other players.</p>
+          <label for="create-name">COMMANDER CALLSIGN</label><input id="create-name" maxlength="20" placeholder="e.g. Nova" autocomplete="nickname">
+          <button id="create-room" class="network-primary" type="button">CREATE ROOM <span>↗</span></button>
+        </section>
+        <section class="network-card join-card">
+          <div class="network-card-index">02 / JOIN A MATCH</div><h2>Enter a room code</h2><p>Join a commander’s lobby with their five-character code.</p>
+          <label for="join-name">COMMANDER CALLSIGN</label><input id="join-name" maxlength="20" placeholder="e.g. Pilot 02" autocomplete="nickname">
+          <div class="join-code-row"><input id="room-code" maxlength="5" placeholder="ROOM CODE" aria-label="Five-character room code" autocomplete="off"><button id="join-room" class="network-primary" type="button">JOIN <span>↗</span></button></div>
+        </section>
+      </div>
+      <div class="network-feedback" id="network-feedback" role="status" aria-live="polite"><i></i><span>ROOM CODES CONNECT PLAYERS THROUGH THE GAME SERVER</span></div>
+      <button class="solo-entry" id="single-player" type="button"><span>PLAY SOLO</span><small>Continue with the local AI opponent</small><b>→</b></button>
+      <button class="resume-entry" id="resume-last" type="button" hidden><span>RECONNECT TO LAST ROOM</span><small id="resume-label"></small><b>↗</b></button>
+    </main>
+    <footer class="network-footer"><span>LAST SIGNAL <i>· MULTIPLAYER PROTOCOL</i></span><span>2–8 COMMANDERS <b>◆</b></span></footer>
+  </div>
+</div>
+<div class="network-screen" id="lobby-screen" hidden>
+  <div class="network-shell lobby-shell">
+    <header class="network-top"><a class="brand" href="#"><span class="brand-sigil"><i></i><i></i><i></i></span><span class="brand-name">LAST<span>SIGNAL</span></span><span class="edition">ROOM LOBBY</span></a><span class="network-secure"><i></i> <span id="lobby-connection">CONNECTED</span></span></header>
+    <main class="network-main lobby-main">
+      <button id="lobby-back" class="back-link" type="button">← BACK TO ROOM ENTRY</button>
+      <p class="kicker">WAITING FOR DEPLOYMENT <span>· TEAM ASSIGNMENT AUTO-BALANCED</span></p>
+      <h1>Assemble your<br><em>commanders.</em></h1>
+      <div class="lobby-room-code"><div><small>ROOM CODE · SHARE WITH YOUR TEAM</small><strong id="lobby-code">-----</strong></div><button id="copy-code" type="button">COPY CODE <span>▣</span></button></div>
+      <div class="lobby-roster-head"><span>CONNECTED COMMANDERS</span><span id="lobby-count">0 / 8 PLAYERS</span></div>
+      <div class="lobby-roster" id="lobby-roster"></div>
+      <div class="lobby-actions"><button id="leave-lobby" class="network-secondary" type="button">LEAVE ROOM</button><div class="host-note" id="host-note">WAITING FOR THE HOST</div><button id="ready-button" class="network-secondary" type="button">READY UP</button><button id="start-match" class="network-primary" type="button" hidden>START MATCH <span>↗</span></button></div>
+      <p class="lobby-rules">Teams share one energy reserve. The cyan and orange command cores, units, and battle state are synchronized by the server.</p>
+    </main>
+    <footer class="network-footer"><span>LAST SIGNAL <i>· READY CHECK</i></span><span>HOST STARTS AT 2+ PLAYERS <b>◆</b></span></footer>
+  </div>
+</div>
+
+
+<div class="shell" id="game-shell">
+<header class="topbar">
+  <a class="brand" href="#" aria-label="Last Signal"><span class="brand-sigil"><i></i><i></i><i></i></span><span class="brand-name">LAST<span>SIGNAL</span></span><span class="edition">COMMAND SYSTEMS</span></a>
+  <div class="match-state"><span class="live-indicator"></span><span>LIVE SKIRMISH</span><span class="state-divider">/</span><span>SECTOR 07</span></div>
+  <button id="restart" class="restart-button" type="button"><span>↻</span><span>RESTART</span></button>
+</header>
+<main>
+<section class="command-head">
+  <div class="title-block"><p class="kicker">FRONTIER WARFARE SIMULATION <span>· SOLO / MULTIPLAYER</span></p><h1>Deploy. <em>Advance.</em> Prevail.</h1></div>
+  <div class="timer-panel"><span class="timer-label"><i></i> MATCH CLOCK</span><strong id="timer">03:00</strong><small>CORE BREACH OR HOLD THE LINE</small></div>
+</section>
+<section class="core-status" aria-label="Command core status">
+  <div class="core-card own-core"><div class="core-emblem cyan" id="player-core-emblem">N</div><div class="core-copy"><span class="faction-name" id="player-core-name">NOVA COMMAND <b>YOU</b></span><div class="health-rail"><i id="player-core-bar"></i></div></div><strong id="player-core-hp">100<span>%</span></strong></div>
+  <div class="battle-meter"><div class="meter-rivet"></div><span>CORE INTEGRITY</span><div class="meter-rivet"></div></div>
+  <div class="core-card enemy-core"><strong id="ai-core-hp">100<span>%</span></strong><div class="core-copy"><span class="faction-name" id="ai-core-name">EMBER DIRECTIVE <b>AI</b></span><div class="health-rail"><i id="ai-core-bar"></i></div></div><div class="core-emblem orange" id="ai-core-emblem">E</div></div>
+</section>
+<section class="arena-frame">
+  <div class="arena-topline"><span><i class="pulse-dot"></i> FRONTLINE UPLINK <b>ACTIVE</b></span><span id="opponent-status">EMBER DIRECTIVE <i>· DEPLOYING</i></span></div>
+  <div class="arena-wrap"><canvas id="battlefield" aria-label="Real-time battlefield. Select a unit and deploy on the cyan side."></canvas><div class="canvas-vignette"></div><div class="deployment-hint" id="deploy-hint"><span>⌖</span> SELECT A UNIT BELOW, THEN DEPLOY ON YOUR SIDE</div></div>
+  <div class="lane-labels"><span>UPPER LANE</span><span>MID LANE</span><span>LOWER LANE</span><span class="territory-label">DEPLOY ZONE <b>››</b></span></div>
+</section>
+<section class="command-deck">
+  <div class="deck-heading"><div><p class="kicker">01 / COMMAND DECK</p><h2>Choose your deployment</h2></div><div class="energy-display"><div class="energy-meta"><span><i class="energy-glyph">ϟ</i> <span id="energy-label">ENERGY</span></span><strong><b id="energy-value">6.0</b><small> / 10</small></strong></div><div class="energy-rail"><i id="energy-bar"></i><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><small class="regen-label">RECHARGING <b>+0.32 / SEC</b></small></div></div>
+  <div class="unit-cards" id="unit-cards"></div>
+  <div class="command-foot"><div class="match-message" id="match-message" role="status" aria-live="polite"><span class="status-spark"></span><span>Select a unit card, then deploy it in your territory.</span></div><span class="deploy-cost-hint">DEPLOY ANY LANE · ONE UNIT AT A TIME</span></div>
+</section>
+<section class="field-guide"><div class="guide-heading"><span class="guide-symbol">i</span><div><strong>FIELD GUIDE</strong><small>HOW TO PLAY</small></div></div><p>Choose a unit card and tap one of the three lanes on your faction’s half of the field. Units advance and fight automatically. Protect your Command Core. Destroy the enemy Core, or lead on Core Integrity when the clock reaches zero; remaining unit health breaks a tie.</p></section>
+</main>
+<footer class="footer"><span>LAST SIGNAL <i>· REAL-TIME PROTOTYPE 0.2</i></span><span>ALL SYSTEMS LOCAL <b>◆</b></span></footer>
+</div>
+<div class="result-backdrop" id="result" hidden><section class="result-panel" role="dialog" aria-modal="true" aria-labelledby="result-title"><div class="result-orbit"><div id="result-mark">N</div></div><p class="kicker" id="result-kicker">ENGAGEMENT REPORT</p><h2 id="result-title">SECTOR SECURED</h2><p id="result-copy"></p><div class="result-stats"><div><span>NOVA CORE</span><b id="result-player-hp">100%</b></div><div><span>EMBER CORE</span><b id="result-ai-hp">0%</b></div></div><button id="play-again" class="primary-action">DEPLOY AGAIN <span>↗</span></button></section></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body></html>
